@@ -19,9 +19,10 @@ int main () {
 
     std::istringstream iss(oss.str());
     archive::iarchive ia(iss);
-    ia >> a
-       >> b;
+    Object a2,b2;
+    ia >> a2
+       >> b2;
     std::cout << "deserialized:" << std::endl;
-    std::cout << "a: " << a << std::endl;
-    std::cout << "b: " << b << std::endl;
+    std::cout << "a2: " << a2 << std::endl;
+    std::cout << "b2: " << b2 << std::endl;
 }
