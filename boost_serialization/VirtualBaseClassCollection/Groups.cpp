@@ -35,7 +35,7 @@ struct Actor : ActorBase {
     }
 
     Value group (const Value& value) override {
-        auto it = breaks.lower_bound( value.as<int>() );
+        auto it = breaks.lower_bound( value.as<T>() );
         return Value( it == breaks.end() ? (int)(breaks.size() + 1) : it->second );
     }
 
@@ -101,15 +101,15 @@ Value Groups::group (const std::string& name, const Value& value)
 std::ostream& operator<< (std::ostream& os, const Groups& groups)
 {
     for (auto& item : groups.m_actors) {
-        ActorBase* bp = dynamic_cast<ActorBase*>( item.second.get() );
+        ActorBase* bp = static_cast<ActorBase*>( item.second.get() );
         switch (bp->m_type) {
             case ActorBase::INT: {
-                ActorInt* ap = dynamic_cast<ActorInt*>( bp );
+                ActorInt* ap = static_cast<ActorInt*>( bp );
                 os << item.first << " " << *ap << std::endl;
                 break;
                 }
             case ActorBase::FLOAT: {
-                ActorFloat* ap = dynamic_cast<ActorFloat*>( bp );
+                ActorFloat* ap = static_cast<ActorFloat*>( bp );
                 os << item.first << " " << *ap << std::endl;
                 break;
                 }
@@ -128,17 +128,17 @@ void Groups::save_object(archive::oarchive_impl* aimpl)
         std::string name = item.first;
         aimpl->oa << name;
 
-        ActorBase* bp = dynamic_cast<ActorBase*>( item.second.get() );
+        ActorBase* bp = static_cast<ActorBase*>( item.second.get() );
         ActorBase::Type t = bp->m_type;
         aimpl->oa << t;
 
         switch (t) {
             case ActorBase::INT: {
-                ActorInt* ap = dynamic_cast<ActorInt*>( bp );
+                ActorInt* ap = static_cast<ActorInt*>( bp );
                 aimpl->oa << *ap;
                 break;}
             case ActorBase::FLOAT: {
-                ActorFloat* ap = dynamic_cast<ActorFloat*>( bp );
+                ActorFloat* ap = static_cast<ActorFloat*>( bp );
                 aimpl->oa << *ap;
                 break; }
             default: break;
@@ -161,12 +161,12 @@ void Groups::load_object(archive::iarchive_impl* aimpl)
         switch (t) {
             case ActorBase::INT: {
                 m_actors[name] = std::shared_ptr<ActorInt>( new ActorInt );
-                ActorInt* ap = dynamic_cast<ActorInt*>( m_actors[name].get() );
+                ActorInt* ap = static_cast<ActorInt*>( m_actors[name].get() );
                 aimpl->ia >> *ap;
                 break;}
             case ActorBase::FLOAT: {
                 m_actors[name] = std::shared_ptr<ActorFloat>( new ActorFloat );
-                ActorFloat* ap = dynamic_cast<ActorFloat*>( m_actors[name].get() );
+                ActorFloat* ap = static_cast<ActorFloat*>( m_actors[name].get() );
                 aimpl->ia >> *ap;
                 break; }
             default: break;
